@@ -1,0 +1,97 @@
+[
+  {
+    "name": "Lamborghini Revuelto",
+    "year": 2024,
+    "price": "$608,358",
+    "engine": "6.5L V12 Hybrid",
+    "horsepower": 1015,
+    "fuelType": "Hybrid",
+    "transmission": "8-Speed Dual-Clutch",
+    "topSpeed": "350 km/h",
+    "acceleration": "0-100 km/h in 2.5s",
+    "features": [
+      "Aerodynamic Carbon-Fiber Body",
+      "All-Wheel Drive",
+      "Advanced Infotainment System",
+      "Adaptive Suspension"
+    ],
+    "image": "/images/lamborghini_revuelto.jpg",
+    "video": "/videos/lamborghini_revuelto.mp4"
+  },
+  {
+    "name": "Mercedes G63 AMG",
+    "year": 2024,
+    "price": "$179,000",
+    "engine": "4.0L V8 Biturbo",
+    "horsepower": 577,
+    "fuelType": "Petrol",
+    "transmission": "9-Speed Automatic",
+    "topSpeed": "220 km/h",
+    "acceleration": "0-100 km/h in 4.5s",
+    "features": [
+      "Luxury Interior with Leather & Wood",
+      "Advanced Off-Road Capabilities",
+      "Mercedes MBUX Infotainment System",
+      "Adaptive Cruise Control"
+    ],
+    "image": "/images/mercedes_g63.jpg",
+    "video": "/videos/mercedes_g63.mp4"
+  },
+  {
+    "name": "Koenigsegg One Pro",
+    "year": 2024,
+    "price": "$3,200,000",
+    "engine": "5.0L V8 Twin-Turbo",
+    "horsepower": 1341,
+    "fuelType": "Petrol",
+    "transmission": "7-Speed Paddle Shift",
+    "topSpeed": "440 km/h",
+    "acceleration": "0-100 km/h in 2.8s",
+    "features": [
+      "Full Carbon Fiber Body",
+      "Aerodynamic Active Rear Wing",
+      "Lightweight Magnesium Wheels",
+      "Advanced Traction Control"
+    ],
+    "image": "/images/koenigsegg_one_pro.jpg",
+    "video": "/videos/koenigsegg_one_pro.mp4"
+  },
+  {
+    "name": "Bugatti Tourbillon",
+    "year": 2024,
+    "price": "$5,000,000",
+    "engine": "8.3L V16 Hybrid",
+    "horsepower": 1800,
+    "fuelType": "Hybrid",
+    "transmission": "8-Speed Dual-Clutch",
+    "topSpeed": "480 km/h",
+    "acceleration": "0-100 km/h in 2.2s",
+    "features": [
+      "Ultra-Luxury Interior",
+      "Active Aero Dynamics",
+      "Advanced Carbon Fiber Structure",
+      "High-Performance Hybrid Powertrain"
+    ],
+    "image": "/images/bugatti_tourbillon.jpg",
+    "video": "/videos/bugatti_tourbillon.mp4"
+  },
+  {
+    "name": "Lamborghini Centenario",
+    "year": 2017,
+    "price": "$2,400,000",
+    "engine": "6.5L V12",
+    "horsepower": 770,
+    "fuelType": "Petrol",
+    "transmission": "7-Speed ISR",
+    "topSpeed": "350 km/h",
+    "acceleration": "0-100 km/h in 2.8s",
+    "features": [
+      "Limited Edition (Only 40 Units Made)",
+      "Lightweight Carbon Fiber Body",
+      "Rear-Wheel Steering",
+      "Aerodynamic Rear Wing"
+    ],
+    "image": "/images/lamborghini_centenario.jpg",
+    "video": "/videos/lamborghini_centenario.mp4"
+  }
+]

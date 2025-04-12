@@ -1,0 +1,70 @@
+{
+  "compilerOptions": {
+    "jsx": "preserve", // Next.js uses React 17+ JSX runtime
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@public/*": [
+        "./public/*"
+      ],
+      "@assets/*": [
+        "./public/assets/*"
+      ]
+    },
+    "moduleResolution": "node", // Next.js requires Node module resolution
+    "allowJs": true, // Allow JavaScript files for Three.js examples
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitAny": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "noImplicitReturns": true,
+    "types": [
+      "node",
+      "three",
+      "next"
+    ] // Add types for Node.js, Three.js, and Next.js
+    ,
+    "incremental": true,
+    "esModuleInterop": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    "src",
+    ".next/types/**/*.ts"
+  ], // Include Next.js environment types
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".next", // Exclude Next.js build output
+    "out" // Exclude custom Next.js output folder
+  ]
+}
