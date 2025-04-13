@@ -1,6 +1,6 @@
 # my-dream-garage
 
-**Dream Garage** is an interactive 3D web experience that brings your fantasy garage to life. Designed as a personal showroom for showcasing an exclusive collection of supercars, this project blends cutting-edge 3D graphics with smooth, cinematic animations.
+**My Dream Garage** is an interactive 3D web experience that brings your fantasy garage to life. Designed as a personal showroom for showcasing an exclusive collection of supercars, this project blends cutting-edge 3D graphics with smooth, cinematic animations.
 
 Powered by **Three.js**, the showroom features high-fidelity 3D models of iconic supercars, immersive lighting, and realistic reflections to elevate the visual experience. The application is structured using **React.js**, enabling fast rendering and modular architecture.
 
