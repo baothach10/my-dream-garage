@@ -1,4 +1,4 @@
-# my-dream-garage
+# My Dream Garage Project
 
 **My Dream Garage** is an interactive 3D web experience that brings your fantasy garage to life. Designed as a personal showroom for showcasing an exclusive collection of supercars, this project blends cutting-edge 3D graphics with smooth, cinematic animations.
 
