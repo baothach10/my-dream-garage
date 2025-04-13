@@ -5,6 +5,7 @@ body {
 
 html,
 body,
+#root,
 .main-game-container,
 .main-game {
   position: relative;
@@ -12,6 +13,7 @@ body,
   height: 100%;
   overflow: hidden;
 }
+
 
 #css,
 #webgl {
