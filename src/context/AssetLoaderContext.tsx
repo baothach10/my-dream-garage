@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import * as THREE from 'three';
+import { AnimationAction, AnimationMixer, DataTexture, EquirectangularReflectionMapping, LoadingManager, Texture, TextureLoader } from 'three';
 import { DRACOLoader, EXRLoader, RGBELoader } from 'three/examples/jsm/Addons';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
@@ -10,12 +10,12 @@ import LoadResourcesWorker from '@/workers/loadResources.worker?worker&ts';
 interface IAssetContextProps {
   isLoaded: boolean;
   progress: number;
-  textures: { [key: string]: THREE.Texture };
+  textures: { [key: string]: Texture };
   models: { [key: string]: GLTF };
   specs: { [key: string]: TSpecification };
-  envBackground: THREE.Texture | undefined;
-  animationActions: { [key: string]: THREE.AnimationAction };
-  animationMixers: { [key: string]: THREE.AnimationMixer };
+  envBackground: Texture | undefined;
+  animationActions: { [key: string]: AnimationAction };
+  animationMixers: { [key: string]: AnimationMixer };
 }
 
 const AssetLoaderContext = createContext<IAssetContextProps | null>(null);
@@ -23,17 +23,16 @@ const AssetLoaderContext = createContext<IAssetContextProps | null>(null);
 export function AssetLoaderProvider({ children }: { children: ReactNode }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [textures, setTextures] = useState<{ [key: string]: THREE.Texture }>({});
-  const [envBackground, setEnvBackground] = useState<THREE.Texture>();
+  const [textures, setTextures] = useState<{ [key: string]: Texture }>({});
+  const [envBackground, setEnvBackground] = useState<Texture>();
   const [models, setModels] = useState<{ [key: string]: GLTF }>({});
   const [specs, setSpecs] = useState<{ [key: string]: TSpecification }>({});
   const [animationActions, setAnimationActions] = useState<{
-    [key: string]: THREE.AnimationAction;
+    [key: string]: AnimationAction;
   }>({});
   const [animationMixers, setAnimationMixers] = useState<{
-    [key: string]: THREE.AnimationMixer;
+    [key: string]: AnimationMixer;
   }>({});
-
 
   useEffect(() => {
     console.log('rerender')
@@ -47,21 +46,21 @@ export function AssetLoaderProvider({ children }: { children: ReactNode }) {
           const parsedModels: Record<string, GLTF | null> = {};
 
           const rawImages = e.data.images as Record<string, TImageResults>;
-          const parsedImages: Record<string, THREE.Texture | null> = {};
+          const parsedImages: Record<string, Texture | null> = {};
 
           const rawHDRI = e.data.hdri as Record<string, THdriResults>;
-          const parsedHDRI: Record<string, THREE.Texture | null> = {};
+          const parsedHDRI: Record<string, Texture | null> = {};
 
           const rawEnvironment = e.data.environment as Record<string, ArrayBuffer>;
-          // const parsedEnvironment: Record<string, THREE.Texture | null> = {};
+          // const parsedEnvironment: Record<string, Texture | null> = {};
 
           const rawSpec = e.data.spec as Record<string, TSpecification>;
           const parsedSpec: Record<string, TSpecification | null> = {};
 
-          const manager = new THREE.LoadingManager();
+          const manager = new LoadingManager();
           const gltfLoader = new GLTFLoader(manager);
           const dracoLoader = new DRACOLoader(manager);
-          const textureLoader = new THREE.TextureLoader(manager);
+          const textureLoader = new TextureLoader(manager);
           const hdrLoader = new RGBELoader(manager);
           const exrLoader = new EXRLoader(manager);
           dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
@@ -76,23 +75,38 @@ export function AssetLoaderProvider({ children }: { children: ReactNode }) {
           };
 
 
-          for (const [name, buffer] of Object.entries(rawModels)) {
-            if (buffer) {
-              try {
-                const gltf = await new Promise<GLTF>((resolve, reject) =>
-                  gltfLoader.parse(buffer, '', resolve, reject)
-                );
+          const loadHDRI = (url: string, type: string) => {
+            return new Promise<Texture | DataTexture>((resolve, reject) => {
+              const loader = type === 'hdr' ? hdrLoader : exrLoader;
+              loader.load(
+                url,
+                (texture) => {
+                  texture.mapping = EquirectangularReflectionMapping;
+                  resolve(texture);
+                },
+                undefined,
+                reject
+              );
+            });
+          };
+
+          // Model Loading Logic
+          const loadModel = (name: string, buffer: ArrayBuffer) => {
+            return new Promise<GLTF>((resolve, reject) => {
+              gltfLoader.parse(buffer, '', resolve, reject);
+            })
+              .then(gltf => {
                 parsedModels[name] = gltf;
                 parsedResourcesCount += 1;
                 updateProgress(parsedResourcesCount, totalResourcesCount);
-              } catch (err) {
+              })
+              .catch(err => {
                 console.error(`Failed to parse ${name}:`, err);
                 parsedModels[name] = null;
                 parsedResourcesCount += 1;
                 updateProgress(parsedResourcesCount, totalResourcesCount);
-              }
-            }
-          }
+              });
+          };
 
           for (const [name, data] of Object.entries(rawImages)) {
             if (data) {
@@ -114,23 +128,27 @@ export function AssetLoaderProvider({ children }: { children: ReactNode }) {
             }
           }
 
-          for (const [name, data] of Object.entries(rawHDRI)) {
+          // Create Promises for Models and HDRI
+          const modelLoadPromises = Object.entries(rawModels).map(([name, buffer]) => {
+            return loadModel(name, buffer);
+          });
+
+          const hdrLoadPromises = Object.entries(rawHDRI).map(([name, data]) => {
             if (data) {
               const { type, buffer } = data;
-              try {
-                const url = convertImageBufferToBlobUrl(buffer, type);
-                const texture = type === 'hdr' ? hdrLoader.load(url) : exrLoader.load(url);
-                parsedHDRI[name] = texture;
-                parsedResourcesCount += 1;
-                updateProgress(parsedResourcesCount, totalResourcesCount);
-              } catch (err) {
-                console.error(`Failed to parse ${name}:`, err);
-                parsedHDRI[name] = null;
-                parsedResourcesCount += 1;
-                updateProgress(parsedResourcesCount, totalResourcesCount);
-              }
+              const url = convertImageBufferToBlobUrl(buffer, 'application/octet-stream');
+              return loadHDRI(url, type)
+                .then(texture => {
+                  parsedHDRI[name] = texture;
+                })
+                .catch(err => {
+                  console.error(`Failed to load HDRI ${name}:`, err);
+                });
             }
-          }
+          });
+
+
+
 
           for (const [name, spec] of Object.entries(rawSpec)) {
             if (spec) {
@@ -147,13 +165,13 @@ export function AssetLoaderProvider({ children }: { children: ReactNode }) {
             }
           }
 
-          const animationMixersObj: { [key: string]: THREE.AnimationMixer } = {};
-          const animationActionsObj: { [key: string]: THREE.AnimationAction } = {};
+          const animationMixersObj: { [key: string]: AnimationMixer } = {};
+          const animationActionsObj: { [key: string]: AnimationAction } = {};
 
           // Load the animations
           for (const [modelName, model] of Object.entries(parsedModels)) {
             if (model) {
-              const mixer = new THREE.AnimationMixer(model.scene);
+              const mixer = new AnimationMixer(model.scene);
               model.animations.forEach((clip) => {
                 const action = mixer.clipAction(clip);
                 animationActionsObj[modelName] = action;
@@ -162,9 +180,12 @@ export function AssetLoaderProvider({ children }: { children: ReactNode }) {
             }
           }
 
+          // Wait for both models and HDRIs to finish loading
+          await Promise.all([...modelLoadPromises, ...hdrLoadPromises]);
+
           // Set the state with the loaded resources
           setModels(parsedModels as { [key: string]: GLTF });
-          setTextures({ ...parsedImages as { [key: string]: THREE.Texture }, ...parsedHDRI as { [key: string]: THREE.Texture } });
+          setTextures({ ...parsedImages as { [key: string]: Texture }, ...parsedHDRI as { [key: string]: Texture | DataTexture } });
           setAnimationActions(animationActionsObj);
           setAnimationMixers(animationMixersObj);
           setSpecs(parsedSpec as { [key: string]: TSpecification });

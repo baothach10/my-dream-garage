@@ -6,7 +6,7 @@ type TLoadingSceneProps = {
     percentage: number;
 };
 
-const LoadingScene = ({ percentage }: TLoadingSceneProps) => {
+export const LoadingScene = ({ percentage }: TLoadingSceneProps) => {
     return (
         <div>
             <h1>Loading...</h1>

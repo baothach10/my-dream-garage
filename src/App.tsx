@@ -1,7 +1,7 @@
 import React from 'react';
 
-import LoadingScene from './components/LoadingScene/LoadingScene';
-import ThreeScene from './components/scenes/ThreeScene';
+import { LoadingScene } from './components/LoadingScene/LoadingScene';
+import { ThreeScene } from './components/scenes/ThreeScene';
 import { useAssets } from './context/AssetLoaderContext';
 
 const App: React.FC = () => {
@@ -13,7 +13,7 @@ const App: React.FC = () => {
         animationMixers,
         specs } = useAssets()
 
-    return isLoaded ? <ThreeScene /> : <LoadingScene percentage={progress} />
+    return isLoaded ? <ThreeScene textures={textures} models={models} specs={specs} animationMixers={animationMixers} animationActions={animationActions} /> : <LoadingScene percentage={progress} />
 };
 
 export default App;

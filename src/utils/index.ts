@@ -1,4 +1,4 @@
-import { PerspectiveCamera, Vector2, Vector3 } from 'three';
+import { Box3, PerspectiveCamera, Vector2, Vector3 } from 'three';
 import { GLTF, PointerLockControls } from 'three/examples/jsm/Addons';
 
 export function lockMouseControl(pointerLockControls: PointerLockControls) {
@@ -92,3 +92,99 @@ export function toCamelCase(name: string): string {
     .map((word, index) => (index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1)))
     .join('');
 }
+
+export const getCarHood = (model: GLTF, rotation: number) => {
+  const boundingBox = new Box3().setFromObject(model.scene);
+
+  // Get the depth of the object
+  const boxDepth = boundingBox.max.z - boundingBox.min.z;
+
+  // Set the vector of the world origin applying the OXYZ axis that the current world is applying
+  const forwardVector = new Vector3(0, 0, boxDepth / 2).applyQuaternion(model.scene.quaternion);
+  // Rotate the forward vector by the model's rotation on Y axis
+  forwardVector.applyAxisAngle(new Vector3(0, 1, 0), rotation);
+
+  const testVector3 = new Vector3(0, 0, 0);
+  // Get the center of the bounding box and add the forward vector to it
+  boundingBox.getCenter(testVector3);
+  testVector3.add(forwardVector);
+
+  return testVector3;
+};
+
+export const getCarCenter = (model: GLTF, rotation: number) => {
+  const boundingBox = new Box3().setFromObject(model.scene);
+
+  // Get the depth of the object
+  // const boxDepth = boundingBox.max.z - boundingBox.min.z;
+
+  // Set the vector of the world origin applying the OXYZ axis that the current world is applying
+  const forwardVector = new Vector3(0, 0, 0).applyQuaternion(model.scene.quaternion);
+  // Rotate the forward vector by the model's rotation on Y axis
+  forwardVector.applyAxisAngle(new Vector3(0, 1, 0), rotation);
+
+  const testVector3 = new Vector3(0, 0, 0);
+  // Get the center of the bounding box and add the forward vector to it
+  boundingBox.getCenter(testVector3);
+  testVector3.add(forwardVector);
+
+  return testVector3;
+};
+
+export const getCarTail = (model: GLTF, rotation: number) => {
+  const boundingBox = new Box3().setFromObject(model.scene);
+
+  // Get the depth of the object
+  const boxDepth = boundingBox.max.z - boundingBox.min.z;
+
+  // Set the vector of the world origin applying the OXYZ axis that the current world is applying
+  const forwardVector = new Vector3(0, 0, -boxDepth / 2).applyQuaternion(model.scene.quaternion);
+  // Rotate the forward vector by the model's rotation on Y axis
+  forwardVector.applyAxisAngle(new Vector3(0, 1, 0), rotation);
+
+  const testVector3 = new Vector3(0, 0, 0);
+  // Get the center of the bounding box and add the forward vector to it
+  boundingBox.getCenter(testVector3);
+  testVector3.add(forwardVector);
+
+  return testVector3;
+};
+
+export const getCarRightSide = (model: GLTF, rotation: number) => {
+  const boundingBox = new Box3().setFromObject(model.scene);
+
+  // Get the depth of the object
+  const boxDepth = boundingBox.max.x - boundingBox.min.x;
+
+  // Set the vector of the world origin applying the OXYZ axis that the current world is applying
+  const forwardVector = new Vector3(boxDepth / 2, 0, 0).applyQuaternion(model.scene.quaternion);
+  // Rotate the forward vector by the model's rotation on Y axis
+  forwardVector.applyAxisAngle(new Vector3(0, 1, 0), rotation);
+
+  const testVector3 = new Vector3(0, 0, 0);
+  // Get the center of the bounding box and add the forward vector to it
+  boundingBox.getCenter(testVector3);
+  testVector3.add(forwardVector);
+
+  return testVector3;
+};
+
+export const getCarLeftSide = (model: GLTF, rotation: number) => {
+  const boundingBox = new Box3().setFromObject(model.scene);
+
+  // Get the depth of the object
+  const boxDepth = boundingBox.max.x - boundingBox.min.x;
+
+  // Set the vector of the world origin applying the OXYZ axis that the current world is applying
+  const forwardVector = new Vector3(-boxDepth / 2, 0, 0).applyQuaternion(model.scene.quaternion);
+  // Rotate the forward vector by the model's rotation on Y axis
+  forwardVector.applyAxisAngle(new Vector3(0, 1, 0), rotation);
+
+  const testVector3 = new Vector3(0, 0, 0);
+  // Get the center of the bounding box and add the forward vector to it
+  boundingBox.getCenter(testVector3);
+  testVector3.add(forwardVector);
+
+  return testVector3;
+};
+

@@ -6,7 +6,7 @@ import { AssetLoaderProvider } from './context/AssetLoaderContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
-    <React.StrictMode>
+    // <React.StrictMode>
         <AssetLoaderProvider><App /></AssetLoaderProvider>
-    </React.StrictMode>
+    // </React.StrictMode>
 );

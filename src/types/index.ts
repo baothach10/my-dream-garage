@@ -1,3 +1,6 @@
+import { AnimationAction, AnimationMixer, Texture } from 'three';
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+
 export type TSpecification = {
   name: string;
   year: number;
@@ -46,4 +49,13 @@ export interface ILabelPosition {
   z: number;
   content?: string | string[];
   lerpIndex?: number;
+}
+
+export interface IThreeScene {
+  textures: { [key: string]: Texture };
+  models: { [key: string]: GLTF };
+  specs: { [key: string]: TSpecification };
+  envBackground?: Texture;
+  animationActions: { [key: string]: AnimationAction };
+  animationMixers: { [key: string]: AnimationMixer };
 }
