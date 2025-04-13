@@ -1,5 +1,5 @@
-[
-  {
+{
+  "lamborghiniRevuelto": {
     "name": "Lamborghini Revuelto",
     "year": 2024,
     "price": "$608,358",
@@ -18,7 +18,7 @@
     "image": "/images/lamborghini_revuelto.jpg",
     "video": "/videos/lamborghini_revuelto.mp4"
   },
-  {
+  "mercedesG63Amg": {
     "name": "Mercedes G63 AMG",
     "year": 2024,
     "price": "$179,000",
@@ -37,7 +37,7 @@
     "image": "/images/mercedes_g63.jpg",
     "video": "/videos/mercedes_g63.mp4"
   },
-  {
+  "koenigseggOnePro": {
     "name": "Koenigsegg One Pro",
     "year": 2024,
     "price": "$3,200,000",
@@ -56,7 +56,7 @@
     "image": "/images/koenigsegg_one_pro.jpg",
     "video": "/videos/koenigsegg_one_pro.mp4"
   },
-  {
+  "bugattiTourbillon": {
     "name": "Bugatti Tourbillon",
     "year": 2024,
     "price": "$5,000,000",
@@ -75,7 +75,7 @@
     "image": "/images/bugatti_tourbillon.jpg",
     "video": "/videos/bugatti_tourbillon.mp4"
   },
-  {
+  "lamborghiniCentenario": {
     "name": "Lamborghini Centenario",
     "year": 2017,
     "price": "$2,400,000",
@@ -94,4 +94,4 @@
     "image": "/images/lamborghini_centenario.jpg",
     "video": "/videos/lamborghini_centenario.mp4"
   }
-]
+}

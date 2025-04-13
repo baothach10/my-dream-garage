@@ -54,7 +54,7 @@ export function AssetLoaderProvider({ children }: { children: ReactNode }) {
           const rawEnvironment = e.data.environment as Record<string, ArrayBuffer>;
           // const parsedEnvironment: Record<string, Texture | null> = {};
 
-          const rawSpec = e.data.spec as Record<string, TSpecification>;
+          const rawSpec = e.data.spec as { showroom: Record<string, TSpecification> };
           const parsedSpec: Record<string, TSpecification | null> = {};
 
           const manager = new LoadingManager();
@@ -91,21 +91,20 @@ export function AssetLoaderProvider({ children }: { children: ReactNode }) {
           };
 
           // Model Loading Logic
-          const loadModel = (name: string, buffer: ArrayBuffer) => {
-            return new Promise<GLTF>((resolve, reject) => {
-              gltfLoader.parse(buffer, '', resolve, reject);
-            })
-              .then(gltf => {
-                parsedModels[name] = gltf;
-                parsedResourcesCount += 1;
-                updateProgress(parsedResourcesCount, totalResourcesCount);
-              })
-              .catch(err => {
-                console.error(`Failed to parse ${name}:`, err);
-                parsedModels[name] = null;
-                parsedResourcesCount += 1;
-                updateProgress(parsedResourcesCount, totalResourcesCount);
+          const loadModel = async (name: string, buffer: ArrayBuffer) => {
+            try {
+              const gltf = await new Promise<GLTF>((resolve, reject) => {
+                gltfLoader.parse(buffer, '', resolve, reject);
               });
+              parsedModels[name] = gltf;
+              parsedResourcesCount += 1;
+              updateProgress(parsedResourcesCount, totalResourcesCount);
+            } catch (err) {
+              console.error(`Failed to parse ${name}:`, err);
+              parsedModels[name] = null;
+              parsedResourcesCount += 1;
+              updateProgress(parsedResourcesCount, totalResourcesCount);
+            }
           };
 
           for (const [name, data] of Object.entries(rawImages)) {
@@ -147,13 +146,11 @@ export function AssetLoaderProvider({ children }: { children: ReactNode }) {
             }
           });
 
-
-
-
-          for (const [name, spec] of Object.entries(rawSpec)) {
-            if (spec) {
+          // load car specifications
+          for (const name in rawSpec['showroom']) {
+            if (name && rawSpec.showroom[name]) {
               try {
-                parsedSpec[name] = spec;
+                parsedSpec[name] = rawSpec.showroom[name];
                 parsedResourcesCount += 1;
                 updateProgress(parsedResourcesCount, totalResourcesCount);
               } catch (err) {
@@ -164,6 +161,9 @@ export function AssetLoaderProvider({ children }: { children: ReactNode }) {
               }
             }
           }
+
+          // Wait for both models and HDRIs to finish loading
+          await Promise.all([...modelLoadPromises, ...hdrLoadPromises]);
 
           const animationMixersObj: { [key: string]: AnimationMixer } = {};
           const animationActionsObj: { [key: string]: AnimationAction } = {};
@@ -179,9 +179,6 @@ export function AssetLoaderProvider({ children }: { children: ReactNode }) {
               });
             }
           }
-
-          // Wait for both models and HDRIs to finish loading
-          await Promise.all([...modelLoadPromises, ...hdrLoadPromises]);
 
           // Set the state with the loaded resources
           setModels(parsedModels as { [key: string]: GLTF });
