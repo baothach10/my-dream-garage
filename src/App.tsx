@@ -13,7 +13,7 @@ const App: React.FC = () => {
         animationMixers,
         specs } = useAssets()
 
-    return isLoaded ? <ThreeScene textures={textures} models={models} specs={specs} animationMixers={animationMixers} animationActions={animationActions} /> : <LoadingScene percentage={progress} />
+    return 1 != 1 ? <ThreeScene textures={textures} models={models} specs={specs} animationMixers={animationMixers} animationActions={animationActions} /> : <LoadingScene percentage={progress} />
 };
 
 export default App;

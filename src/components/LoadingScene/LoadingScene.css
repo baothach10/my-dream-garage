@@ -33,30 +33,33 @@
 
 .banner .slider {
   position: absolute;
-  width: 350px;
-  height: 370px;
+  width: 30%;
+  height: 35%;
   top: 15%;
-  left: calc(50% - 100px);
+  left: 50%;
   transform-style: preserve-3d;
-  transform: perspective(3000px);
+  transform: translateX(-50%) perspective(3000px);
   animation: autoRun 5s linear infinite;
   z-index: 2;
 }
 
 @keyframes autoRun {
   from {
-    transform: perspective(3000px) rotateX(-20deg) rotateY(0deg);
+    transform: translateX(-50%) perspective(3000px) rotateX(-20deg) rotateY(0deg);
   }
   to {
-    transform: perspective(3000px) rotateX(-20deg) rotateY(360deg);
+    transform: translateX(-50%) perspective(3000px) rotateX(-20deg) rotateY(360deg);
   }
 }
 
 .banner .slider .item {
-  padding: 10px;
   position: absolute;
   inset: 0 0 0 0;
   transform: rotateY(calc((var(--position) - 1) * (360 / var(--quantity)) * 1deg)) translateZ(550px);
+  @media screen and (max-width: 1000px) {
+    transform: rotateY(calc((var(--position) - 1) * (360 / var(--quantity)) * 1deg))
+      translateZ(300px);
+  }
 }
 
 .banner .slider .item img {
@@ -71,7 +74,7 @@
   left: 0;
   width: 100%;
   height: max-content;
-  padding-bottom: 100px;
+  padding-bottom: 5%;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -84,9 +87,11 @@
   font-weight: 400;
   font-style: normal;
   font-size: 8em;
-  line-height: 1em;
   color: white;
   position: relative;
+  @media screen and (max-width: 1000px) {
+    font-size: 4em;
+  }
 }
 
 .banner .content h1::after {
@@ -105,11 +110,14 @@
   font-weight: 700;
   font-style: normal;
   color: white;
-  max-width: 300px;
+  max-width: 30%;
 }
 
 .banner .content h2 {
   font-size: 4em;
+  @media screen and (max-width: 1000px) {
+    font-size: 2em;
+  }
 }
 .banner .content p {
   white-space: nowrap;
@@ -119,6 +127,9 @@
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
+  @media screen and (max-width: 1000px) {
+    font-size: 1.25em;
+  }
 }
 
 .banner .content .model {
