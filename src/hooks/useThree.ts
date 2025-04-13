@@ -65,8 +65,6 @@ export function useThree() {
   useEffect(() => {
     if (!mountRef.current) return;
 
-    console.log('three hook');
-
     // Scene Setup
     const webglScene = new THREE.Scene();
     const cssScene = new THREE.Scene();

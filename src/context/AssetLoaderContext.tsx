@@ -24,7 +24,7 @@ export function AssetLoaderProvider({ children }: { children: ReactNode }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
   const [textures, setTextures] = useState<{ [key: string]: Texture }>({});
-  const [envBackground, setEnvBackground] = useState<Texture>();
+  const [envBackground, ] = useState<Texture>();
   const [models, setModels] = useState<{ [key: string]: GLTF }>({});
   const [specs, setSpecs] = useState<{ [key: string]: TSpecification }>({});
   const [animationActions, setAnimationActions] = useState<{
@@ -35,12 +35,10 @@ export function AssetLoaderProvider({ children }: { children: ReactNode }) {
   }>({});
 
   useEffect(() => {
-    console.log('rerender')
     function preload() {
       try {
         const worker = new LoadResourcesWorker();
         worker.onmessage = async (e) => {
-          console.log('Worker loaded Raw Data');
 
           const rawModels = e.data.models as Record<string, ArrayBuffer>;
           const parsedModels: Record<string, GLTF | null> = {};
@@ -209,7 +207,6 @@ export function AssetLoaderProvider({ children }: { children: ReactNode }) {
           ],
           images: []
         });
-        console.log('Worker started');
       } catch (e) {
         console.error('Preload error:', e)
       }

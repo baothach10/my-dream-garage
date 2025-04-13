@@ -1,0 +1,136 @@
+@keyframes rotate {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  100% {
+    transform: rotateZ(360deg);
+  }
+}
+
+.allura-bold {
+  font-family: 'Allura', cursive;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.loading-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+}
+
+.banner {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.banner .slider {
+  position: absolute;
+  width: 350px;
+  height: 370px;
+  top: 15%;
+  left: calc(50% - 100px);
+  transform-style: preserve-3d;
+  transform: perspective(3000px);
+  animation: autoRun 5s linear infinite;
+  z-index: 2;
+}
+
+@keyframes autoRun {
+  from {
+    transform: perspective(3000px) rotateX(-20deg) rotateY(0deg);
+  }
+  to {
+    transform: perspective(3000px) rotateX(-20deg) rotateY(360deg);
+  }
+}
+
+.banner .slider .item {
+  padding: 10px;
+  position: absolute;
+  inset: 0 0 0 0;
+  transform: rotateY(calc((var(--position) - 1) * (360 / var(--quantity)) * 1deg)) translateZ(550px);
+}
+
+.banner .slider .item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.banner .content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: max-content;
+  padding-bottom: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1;
+}
+
+.banner .content h1 {
+  font-family: 'Poetsen One', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 8em;
+  line-height: 1em;
+  color: white;
+  position: relative;
+}
+
+.banner .content h1::after {
+  content: attr(data-content);
+  position: absolute;
+  inset: 0 0 0 0;
+  z-index: 2;
+  -webkit-text-stroke: 2px white;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.banner .content .author {
+  text-align: right;
+  font-family: 'Dancing Script', cursive;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  color: white;
+  max-width: 300px;
+}
+
+.banner .content h2 {
+  font-size: 4em;
+}
+.banner .content p {
+  white-space: nowrap;
+  text-align: right;
+  font-size: 2em;
+  font-family: 'Teko', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.banner .content .model {
+  background: url('assets/images/loadingCar.webp');
+  width: 100%;
+  height: 80vh;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-size: auto 140%;
+  background-repeat: no-repeat;
+  background-position: top center;
+  z-index: 0;
+}
+
