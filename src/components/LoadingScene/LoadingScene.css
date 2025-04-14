@@ -39,7 +39,7 @@
   left: 50%;
   transform-style: preserve-3d;
   transform: translateX(-50%) perspective(3000px);
-  animation: autoRun 5s linear infinite;
+  animation: autoRun 1.5s ease infinite;
   z-index: 2;
 }
 

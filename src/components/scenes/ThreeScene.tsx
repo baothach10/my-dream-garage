@@ -10,7 +10,7 @@ import { carNames, carCoordinates } from '@/constants';
 import { useThree } from '@/hooks/useThree';
 import { ILabelPosition, ILerpCoordinates, IThreeScene } from '@/types';
 import './ThreeScene.css';
-import { getCarCenter, getCarHood, getCarLeftSide, getCarRightSide, getCarTail, lockMouseControl } from '@/utils';
+import { getCarCenter, getCarHood, getCarRightSide, getCarTail, lockMouseControl } from '@/utils';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -100,7 +100,6 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
 
     const initializeCarsLayout = (
         webglScene: Scene,
-        cssScene: Scene,
         models: { [key: string]: GLTF }
     ) => {
         const lerpCoordinates: ILerpCoordinates[] = [];
@@ -111,8 +110,6 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                 if (child instanceof Mesh || child instanceof SkinnedMesh) {
                     child.castShadow = true;
                     child.receiveShadow = true;
-                    // (child.material as MeshStandardMaterial).color.set(0xffffff); // Set the color to white
-                    // (child.material as MeshStandardMaterial).opacity = 1;
                 }
             });
 
@@ -124,31 +121,10 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
 
             const carTail = getCarTail(carModel, degToRad(carCoor.rotation));
             const carRightSide = getCarRightSide(carModel, degToRad(carCoor.rotation));
-            const carLeftSide = getCarLeftSide(carModel, degToRad(carCoor.rotation));
 
             carModel.scene.rotation.y = degToRad(carCoor.rotation); // Adjust rotation for layout
 
             webglScene.add(carModel.scene as unknown as Scene);
-
-            // const cubeGeometry = new BoxGeometry(0.1, 0.1, 0.1);
-
-            // const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
-            // const cubeMaterial = new MeshStandardMaterial({ color: randomColor });
-            // const cube = new Mesh(cubeGeometry, cubeMaterial);
-            // cube.name = 'carHood';
-            // cube.position.copy(carHood);
-
-            // const cube1 = new Mesh(cubeGeometry, cubeMaterial);
-            // cube1.name = 'carTail';
-            // cube1.position.copy(carTail);
-
-            // const cube2 = new Mesh(cubeGeometry, cubeMaterial);
-            // cube2.name = 'carRightSide';
-            // cube2.position.copy(carRightSide);w
-
-            // const cube3 = new Mesh(cubeGeometry, cubeMaterial);
-            // cube3.name = 'carLeftSide';
-            // cube3.position.copy(carLeftSide);
 
             const frontLightLabel = carModel.scene.getObjectByName('Light');
             const logoLabel = carModel.scene.getObjectByName('Logo');
@@ -285,11 +261,6 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                 }
             );
 
-            // webglScene.add(cube);
-            // webglScene.add(cube1);
-            // webglScene.add(cube2);
-            // webglScene.add(cube3);
-
             carModel.scene.traverse(child => {
                 if (child instanceof SkinnedMesh || child instanceof Mesh) {
                     child.castShadow = true;
@@ -300,20 +271,8 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                 }
             });
 
-            // if (index === 0) {
-            //   if (!hoodLabel || !logoLabel || !frontLightLabel) return;
-
-            //   create2DCSSElement('Car Hood', hoodLabel.getWorldPosition(new Vector3()));
-            //   create2DCSSElement('Car Hood', logoLabel.getWorldPosition(new Vector3()));
-            //   create2DCSSElement('Car Hood', frontLightLabel.getWorldPosition(new Vector3()));
-            // }
-
             if (index === carNames.length - 1) {
                 const carCenter = getCarCenter(carModel, degToRad(carCoor.rotation));
-                // const cube4 = new Mesh(cubeGeometry, cubeMaterial);
-                // cube4.name = 'carCenter';
-                // cube4.position.copy(carCenter);
-                // webglScene.add(cube4);
                 lerpCoordinates.push({
                     x: carCenter.x + 0.5,
                     y: carCenter.y + 0.5,
@@ -485,7 +444,6 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                         camera.lookAt(lerpTarget); // Smoothly transition the camera's lookAt target
                     },
                     onComplete: () => {
-                        // console.log('lerp complete');
                         timeline.clear().restart();
                         timeline.to(
                             camera.position,
@@ -593,8 +551,7 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
         webglScene.add(models['warehouse']!.scene);
 
         if (!isRenderedShadow) {
-            // console.log(Object.keys(specs))
-            initializeCarsLayout(webglScene, cssScene, models);
+            initializeCarsLayout(webglScene, models);
             setIsRenderedShadow(true);
         }
 
