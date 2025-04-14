@@ -55,10 +55,10 @@
 .banner .slider .item {
   position: absolute;
   inset: 0 0 0 0;
-  transform: rotateY(calc((var(--position) - 1) * (360 / var(--quantity)) * 1deg)) translateZ(550px);
+  transform: rotateY(calc((var(--position) - 1) * (360 / var(--quantity)) * 1deg)) translateZ(400px);
   @media screen and (max-width: 1000px) {
     transform: rotateY(calc((var(--position) - 1) * (360 / var(--quantity)) * 1deg))
-      translateZ(300px);
+      translateZ(200px);
   }
 }
 

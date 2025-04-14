@@ -1,7 +1,6 @@
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimationAction, EquirectangularReflectionMapping, Mesh, MeshStandardMaterial, PerspectiveCamera, Scene, SkinnedMesh, Vector3 } from 'three';
 import { CSS2DObject, GLTF } from 'three/examples/jsm/Addons';
@@ -30,6 +29,7 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
     } = useThree();
     const [isRenderedShadow, setIsRenderedShadow] = useState<boolean>(false);
     const [currentIndex, setCurrentIndex] = useState<number>(-1);
+    const isScrolling = useRef<boolean>(false);
 
     const labelObjects = useRef<CSS2DObject[]>([]);
     const lerpCoordinatesRef = useRef<ILerpCoordinates[]>([]);
@@ -341,7 +341,11 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
         if (!newTarget && !oldTarget) return;
         if (!initialCameraPosition) return; // Prevent animation if already animating
 
-        const timeline = gsap.timeline({});
+        const timeline = gsap.timeline({
+            onComplete: () => {
+                isScrolling.current = false; // Unlock scrolling after animation
+            }
+        });
 
 
         if (nextIndex === -1 && oldTarget) {
@@ -350,7 +354,7 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                 x: initialCameraPosition.x,
                 y: initialCameraPosition.y,
                 z: initialCameraPosition.z,
-                duration: 1, // Animation duration in seconds
+                duration: 0.2, // Animation duration in seconds
                 ease: 'expo.inOut', // Smooth easing
                 onStart: () => {
                     setIsFreelyViewing(0); // Lock the camera controls during the animation
@@ -442,8 +446,8 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                                     const cssLabels = document.querySelectorAll('.css-label');
                                     gsap.to(cssLabels, {
                                         opacity: 1,
-                                        duration: 0.5,
-                                        stagger: 0.2, // adds delay between each animation
+                                        duration: 0.2,
+                                        stagger: 0.1, // adds delay between each animation
                                         ease: 'power2.out'
                                     });
                                     setIsFreelyViewing(1); // Unlock the camera controls after the animation
@@ -498,8 +502,8 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                                     const cssLabels = document.querySelectorAll('.css-label');
                                     gsap.to(cssLabels, {
                                         opacity: 1,
-                                        duration: 0.5,
-                                        stagger: 0.2, // adds delay between each animation
+                                        duration: 0.2,
+                                        stagger: 0.1, // adds delay between each animation
                                         ease: 'power2.out'
                                     });
                                     setIsFreelyViewing(1); // Unlock the camera controls after the animation
@@ -510,23 +514,6 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                     },
                     ease: 'expo.inOut'
                 });
-                // if (labelCoordinates[nextIndex]) {
-                //   labelCoordinates[nextIndex].forEach(label => {
-                //     const labelPosition = new Vector3(label.x, label.y, label.z);
-                //     const cssLabel = create2DCSSElement('Label', labelPosition);
-                //     if (!cssLabel || !cssScene) return;
-                //     timeline.to(cssLabel.position, {
-                //       duration: 0.5,
-                //       ease: 'expo.out',
-                //       onUpdate: () => {
-                //         cssLabel.position.copy(labelPosition);
-                //       }
-                //       // onComplete: () => {
-                //       //   cssScene.remove(cssLabel); // Remove label after animation
-                //       // }
-                //     });
-                //   });
-                // }
             }
         }
     };
@@ -539,30 +526,40 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
     // }, [scene, camera, webglRenderer, isLoaded]);
 
     // Debounced function to prevent excessive scrolling
-    const handleWheel = useCallback(
-        debounce((event: WheelEvent) => {
-            setCurrentIndex(prevIndex => {
-                if (event.deltaY > 0) {
-                    const newIndex = Math.min(prevIndex + 1, lerpCoordinatesRef.current.length - 1);
-                    moveCamera(prevIndex, newIndex, camera!);
-                    return newIndex;
-                } else {
-                    const newIndex = Math.max(prevIndex - 1, -1);
-                    moveCamera(prevIndex, newIndex, camera!);
-                    return newIndex;
-                }
-            });
-        }, 200),
-        [camera]
-    );
+    const handleWheel = useCallback((event: WheelEvent) => {
+        if (isScrolling.current) return;
+
+        isScrolling.current = true;
+
+        setCurrentIndex(prevIndex => {
+            let newIndex;
+            if (event.deltaY > 0) {
+                newIndex = Math.min(prevIndex + 1, lerpCoordinatesRef.current.length - 1);
+            } else {
+                newIndex = Math.max(prevIndex - 1, -1);
+            }
+
+            moveCamera(prevIndex, newIndex, camera!);
+            return newIndex;
+        });
+    }, [camera]);
 
     useGSAP(() => {
         if (!camera) return;
-        window.addEventListener('wheel', e => handleWheel(e));
-        return () => {
-            window.removeEventListener('wheel', e => handleWheel(e));
+
+        const wheelHandler = (e: WheelEvent) => {
+            console.log('running wheel')
+            e.preventDefault();
+
+            handleWheel(e);
         };
-    }, [camera]);
+
+        window.addEventListener('wheel', wheelHandler, { passive: false });
+
+        return () => {
+            window.removeEventListener('wheel', wheelHandler);
+        };
+    }, [camera, handleWheel]);
 
 
     useEffect(() => {
