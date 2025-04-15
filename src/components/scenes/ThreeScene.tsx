@@ -79,15 +79,10 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                 span.style.display = 'block';
                 div.appendChild(span);
             });
+            div.style.marginTop = '10%';
         } else {
             div.textContent = content;
         }
-        div.style.color = 'white';
-        div.style.fontSize = '12px';
-        div.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        div.style.padding = '2px 5px';
-        div.style.borderRadius = '3px';
-        // div.style.zIndex = '1';
         div.style.opacity = '0';
 
         const label = new CSS2DObject(div);
@@ -346,7 +341,9 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
             });
         } else {
             // from 1 to end
-            if (!newTarget || nextIndex > lerpCoordinates.length - 1) return;
+            if (!newTarget || nextIndex > lerpCoordinates.length - 1) {
+                return;
+            }
             if (oldTarget) {
                 if (lerpCoordinates[nextIndex]?.index === carNames.indexOf('lamborghiniCentenario')) {
                     if (lerpCoordinates[prevIndex]?.index !== carNames.indexOf('lamborghiniCentenario'))
@@ -367,8 +364,8 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                                 labelObjects.current.forEach(label => {
                                     cssScene!.remove(label); // Remove label after animation
                                 });
-                                if (nextIndex > lerpCoordinates.length - 1) return;
-                                labelCoordinates[nextIndex]!.forEach(label => {
+                                if (!labelCoordinates[nextIndex] || nextIndex > lerpCoordinates.length - 1) return;
+                                labelCoordinates[nextIndex].forEach(label => {
                                     create2DCSSElement(
                                         label.content ? label.content : '',
                                         new Vector3(label.x, label.y, label.z),
@@ -388,7 +385,6 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                         camera.lookAt(lerpTarget); // Smoothly transition the camera's lookAt target
                     },
                     onComplete: () => {
-                        // console.log('lerp complete');
                         timeline.clear().restart();
                         timeline.to(
                             camera.position,
@@ -403,6 +399,12 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                                 },
                                 onComplete: () => {
                                     const cssLabels = document.querySelectorAll('.css-label');
+                                    // Reach the last lerp destination
+                                    if (cssLabels.length === 0 || !labelCoordinates[nextIndex]) {
+                                        camera.lookAt(new Vector3(newTarget.x, newTarget.y, newTarget.z + 1)); 
+                                        setIsFreelyViewing(1); // Unlock the camera controls after the animation
+                                        return;
+                                    }
                                     gsap.to(cssLabels, {
                                         opacity: 1,
                                         duration: 0.2,
@@ -506,9 +508,7 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
         if (!camera) return;
 
         const wheelHandler = (e: WheelEvent) => {
-            console.log('running wheel')
             e.preventDefault();
-
             handleWheel(e);
         };
 
