@@ -283,6 +283,93 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
         labelCoordinatesRef.current = labelCoordinates;
     }
 
+    const createEndingScreen = () => {
+        if (!cssScene) return;
+
+        const div = document.createElement('div');
+        div.className = 'ending-screen';
+        div.innerHTML = `
+            <div>
+            <h1 class="ending-content">Thank you for watching!</h1>
+            <p class="ending-content">Created by Thach Ngo</p>
+            <p class="ending-content">2023</p>
+            </div>
+        `;
+        div.style.position = 'absolute';
+        div.style.top = '100%';
+        div.style.left = '0';
+        div.style.width = '100%';
+        div.style.height = '100%';
+        div.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        div.style.color = 'white';
+        div.style.textAlign = 'center';
+        div.style.zIndex = '1000';
+        div.style.opacity = '1';
+
+        const overlay = document.createElement('div');
+        overlay.className = 'overlay';
+        overlay.style.position = 'absolute';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+
+        overlay.appendChild(div);
+        const root = document.getElementById('root') as HTMLDivElement;
+        root.appendChild(overlay);
+    }
+
+    const showEndingScreen = () => {
+        const endingScreen = document.querySelector('.ending-screen');
+        setIsFreelyViewing(0); // Lock the camera controls during the animation
+        if (endingScreen) {
+            const children = document.querySelectorAll('.ending-content');
+            gsap.to(endingScreen, {
+                top: '0',
+                duration: 1,
+                ease: 'power2.out',
+                onComplete: () => {
+                    gsap.to(children, {
+                        opacity: 1,
+                        duration: 0.5,
+                        stagger: 0.2, // adds delay between each animation
+                        ease: 'power2.out',
+                        onComplete: () => {
+
+                            isScrolling.current = false; // Unlock scrolling after animation
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    const hideEndingScreen = () => {
+        const endingScreen = document.querySelector('.ending-screen') as HTMLDivElement;
+        if (endingScreen) {
+            const children = document.querySelectorAll('.ending-content');
+            gsap.to(children, {
+                opacity: 0,
+                duration: 0.5,
+                stagger: 0.2, // adds delay between each animation
+                ease: 'power2.out',
+                onComplete: () => {
+                    gsap.to(endingScreen, {
+                        top: '100%',
+                        duration: 1,
+                        ease: 'power2.out',
+                        onComplete: () => {
+                            setIsFreelyViewing(1);
+                            isScrolling.current = false; // Unlock scrolling after animation
+                            const overlay = document.querySelector('.overlay') as HTMLDivElement;
+                            if (overlay) overlay.removeChild(endingScreen);
+                        }
+                    });
+                }
+            });
+        }
+    }
+
     const moveCamera = (prevIndex: number, nextIndex: number, camera: PerspectiveCamera) => {
         const lerpCoordinates = lerpCoordinatesRef.current;
         const labelCoordinates = labelCoordinatesRef.current;
@@ -295,11 +382,7 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
         if (!newTarget && !oldTarget) return;
         if (!initialCameraPosition) return; // Prevent animation if already animating
 
-        const timeline = gsap.timeline({
-            onComplete: () => {
-                isScrolling.current = false; // Unlock scrolling after animation
-            }
-        });
+        const timeline = gsap.timeline();
 
 
         if (nextIndex === -1 && oldTarget) {
@@ -308,10 +391,22 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                 x: initialCameraPosition.x,
                 y: initialCameraPosition.y,
                 z: initialCameraPosition.z,
-                duration: 0.2, // Animation duration in seconds
+                duration: 1, // Animation duration in seconds
                 ease: 'expo.inOut', // Smooth easing
                 onStart: () => {
                     setIsFreelyViewing(0); // Lock the camera controls during the animation
+                    const oldLabels = document.querySelectorAll('.css-label');
+                    if (oldLabels.length === 0) return;
+                    gsap.to(oldLabels, {
+                        opacity: 0,
+                        duration: 0.2,
+                        ease: 'power2.out',
+                        onComplete: () => {
+                            labelObjects.current.forEach(label => {
+                                cssScene!.remove(label); // Remove label after animation
+                            });
+                        }
+                    });
                 },
                 onUpdate: () => {
                     camera.lookAt(new Vector3(oldTarget.x, oldTarget.y, oldTarget.z));
@@ -335,27 +430,45 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                         },
                         onComplete: () => {
                             setIsFreelyViewing(1); // Unlock the camera controls after the animation
+                            isScrolling.current = false; // Unlock scrolling after animation
                         }
                     });
                 }
             });
         } else {
             // from 1 to end
-            if (!newTarget || nextIndex > lerpCoordinates.length - 1) {
+            if (nextIndex > lerpCoordinates.length) {
                 return;
             }
             if (oldTarget) {
-                if (lerpCoordinates[nextIndex]?.index === carNames.indexOf('lamborghiniCentenario')) {
-                    if (lerpCoordinates[prevIndex]?.index !== carNames.indexOf('lamborghiniCentenario'))
-                        playAnimationOnce(animationActions['lamborghiniCentenario']!);
-                } else {
-                    if (lerpCoordinates[prevIndex]?.index === carNames.indexOf('lamborghiniCentenario'))
-                        playAnimationReverse(animationActions['lamborghiniCentenario']!);
+                if (nextIndex !== lerpCoordinates.length) {
+                    if (lerpCoordinates[nextIndex]?.index === carNames.indexOf('lamborghiniCentenario')) {
+                        if (lerpCoordinates[prevIndex]?.index !== carNames.indexOf('lamborghiniCentenario'))
+                            playAnimationOnce(animationActions['lamborghiniCentenario']!);
+                    } else {
+                        if (lerpCoordinates[prevIndex]?.index === carNames.indexOf('lamborghiniCentenario'))
+                            playAnimationReverse(animationActions['lamborghiniCentenario']!);
+                    }
                 }
                 timeline.to(camera.position, {
                     duration: 0.5, // Duration for lerping
                     onStart: () => {
                         const oldLabels = document.querySelectorAll('.css-label');
+                        setIsFreelyViewing(0); // Lock the camera controls during the animation
+                        if (oldLabels.length === 0) {
+                            if (nextIndex === lerpCoordinates.length - 1) {
+                                createEndingScreen();
+                            }
+                            if (!labelCoordinates[nextIndex] || nextIndex > lerpCoordinates.length - 1) return;
+                            labelCoordinates[nextIndex].forEach(label => {
+                                create2DCSSElement(
+                                    label.content ? label.content : '',
+                                    new Vector3(label.x, label.y, label.z),
+                                    carNames[lerpCoordinates[nextIndex]!.index]
+                                );
+                            });
+                            return;
+                        }
                         gsap.to(oldLabels, {
                             opacity: 0,
                             duration: 0.2,
@@ -364,6 +477,9 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                                 labelObjects.current.forEach(label => {
                                     cssScene!.remove(label); // Remove label after animation
                                 });
+                                if (nextIndex === lerpCoordinates.length - 1) {
+                                    createEndingScreen();
+                                }
                                 if (!labelCoordinates[nextIndex] || nextIndex > lerpCoordinates.length - 1) return;
                                 labelCoordinates[nextIndex].forEach(label => {
                                     create2DCSSElement(
@@ -374,17 +490,24 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                                 });
                             }
                         });
-                        setIsFreelyViewing(0); // Lock the camera controls during the animation
+
                     },
                     onUpdate: () => {
+                        if (!newTarget) return;
                         const lerpTarget = new Vector3().lerpVectors(
                             new Vector3(oldTarget.x, oldTarget.y, oldTarget.z),
                             new Vector3(newTarget.x, newTarget.y, newTarget.z),
                             timeline.progress()
                         );
                         camera.lookAt(lerpTarget); // Smoothly transition the camera's lookAt target
+
                     },
                     onComplete: () => {
+                        if (nextIndex >= lerpCoordinates.length) {
+                            showEndingScreen();
+                            return;
+                        }
+                        if (!newTarget) return;
                         timeline.clear().restart();
                         timeline.to(
                             camera.position,
@@ -395,16 +518,17 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                                 duration: 1, // Animation duration in seconds
                                 ease: 'expo.out', // Smooth easing
                                 onUpdate: () => {
-                                    camera.lookAt(new Vector3(newTarget.x, newTarget.y, newTarget.z)); // Keep looking at the new target
+                                    // const cssLabels = document.querySelectorAll('.css-label');
+                                    if (prevIndex === lerpCoordinates.length - 2 && nextIndex === lerpCoordinates.length - 1) {
+                                        camera.lookAt(new Vector3(newTarget.x, newTarget.y, newTarget.z + 1));
+                                    } 
+                                    else {
+                                        camera.lookAt(new Vector3(newTarget.x, newTarget.y, newTarget.z)); // Keep looking at the new target
+                                    }
                                 },
                                 onComplete: () => {
                                     const cssLabels = document.querySelectorAll('.css-label');
                                     // Reach the last lerp destination
-                                    if (cssLabels.length === 0 || !labelCoordinates[nextIndex]) {
-                                        camera.lookAt(new Vector3(newTarget.x, newTarget.y, newTarget.z + 1)); 
-                                        setIsFreelyViewing(1); // Unlock the camera controls after the animation
-                                        return;
-                                    }
                                     gsap.to(cssLabels, {
                                         opacity: 1,
                                         duration: 0.2,
@@ -412,6 +536,7 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                                         ease: 'power2.out'
                                     });
                                     setIsFreelyViewing(1); // Unlock the camera controls after the animation
+                                    isScrolling.current = false; // Unlock scrolling after animation
                                 }
                             },
                             '+=0' // Start after the lerping is complete
@@ -420,60 +545,72 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                     ease: 'expo.inOut'
                 });
             } else {
-                // from 0 to 1
-                timeline.to(camera.position, {
-                    duration: 0.5, // Duration for lerping
-                    onStart: () => {
-                        setIsFreelyViewing(0); // Lock the camera controls during the animation
-                        labelCoordinates[nextIndex]!.forEach(label => {
-                            create2DCSSElement(
-                                label.content ? label.content : '',
-                                new Vector3(label.x, label.y, label.z),
-                                carNames[lerpCoordinates[nextIndex]!.index]
+                if (!newTarget) return;
+
+                if (prevIndex === lerpCoordinates.length) {
+                    const endScene = document.querySelector('.ending-screen') as HTMLDivElement;
+                    if (endScene) {
+                        hideEndingScreen();
+                    }
+                    return;
+                } else {
+
+                    // from 0 to 1
+                    timeline.to(camera.position, {
+                        duration: 0.5, // Duration for lerping
+                        onStart: () => {
+                            setIsFreelyViewing(0); // Lock the camera controls during the animation
+                            labelCoordinates[nextIndex]!.forEach(label => {
+                                create2DCSSElement(
+                                    label.content ? label.content : '',
+                                    new Vector3(label.x, label.y, label.z),
+                                    carNames[lerpCoordinates[nextIndex]!.index]
+                                );
+                            });
+                        },
+                        onUpdate: () => {
+                            const lerpTarget = new Vector3().lerpVectors(
+                                new Vector3(
+                                    initialCameraPosition.x,
+                                    initialCameraPosition.y,
+                                    initialCameraPosition.z - 1
+                                ),
+                                new Vector3(newTarget.x, newTarget.y, newTarget.z),
+                                timeline.progress()
                             );
-                        });
-                    },
-                    onUpdate: () => {
-                        const lerpTarget = new Vector3().lerpVectors(
-                            new Vector3(
-                                initialCameraPosition.x,
-                                initialCameraPosition.y,
-                                initialCameraPosition.z - 1
-                            ),
-                            new Vector3(newTarget.x, newTarget.y, newTarget.z),
-                            timeline.progress()
-                        );
-                        camera.lookAt(lerpTarget); // Smoothly transition the camera's lookAt target
-                    },
-                    onComplete: () => {
-                        timeline.clear().restart();
-                        timeline.to(
-                            camera.position,
-                            {
-                                x: newTarget.x + (newTarget.deltaX ?? 0),
-                                y: newTarget.y + (newTarget.deltaY ?? 0),
-                                z: newTarget.z + (newTarget.deltaZ ?? 0),
-                                duration: 1, // Animation duration in seconds
-                                ease: 'expo.out', // Smooth easing
-                                onUpdate: () => {
-                                    camera.lookAt(new Vector3(newTarget.x, newTarget.y, newTarget.z)); // Keep looking at the new target
+                            camera.lookAt(lerpTarget); // Smoothly transition the camera's lookAt target
+                        },
+                        onComplete: () => {
+                            timeline.clear().restart();
+                            timeline.to(
+                                camera.position,
+                                {
+                                    x: newTarget.x + (newTarget.deltaX ?? 0),
+                                    y: newTarget.y + (newTarget.deltaY ?? 0),
+                                    z: newTarget.z + (newTarget.deltaZ ?? 0),
+                                    duration: 1, // Animation duration in seconds
+                                    ease: 'expo.out', // Smooth easing
+                                    onUpdate: () => {
+                                        camera.lookAt(new Vector3(newTarget.x, newTarget.y, newTarget.z)); // Keep looking at the new target
+                                    },
+                                    onComplete: () => {
+                                        const cssLabels = document.querySelectorAll('.css-label');
+                                        gsap.to(cssLabels, {
+                                            opacity: 1,
+                                            duration: 0.2,
+                                            stagger: 0.1, // adds delay between each animation
+                                            ease: 'power2.out'
+                                        });
+                                        isScrolling.current = false; // Unlock scrolling after animation
+                                        setIsFreelyViewing(1); // Unlock the camera controls after the animation
+                                    }
                                 },
-                                onComplete: () => {
-                                    const cssLabels = document.querySelectorAll('.css-label');
-                                    gsap.to(cssLabels, {
-                                        opacity: 1,
-                                        duration: 0.2,
-                                        stagger: 0.1, // adds delay between each animation
-                                        ease: 'power2.out'
-                                    });
-                                    setIsFreelyViewing(1); // Unlock the camera controls after the animation
-                                }
-                            },
-                            '+=0' // Start after the lerping is complete
-                        );
-                    },
-                    ease: 'expo.inOut'
-                });
+                                '+=0' // Start after the lerping is complete
+                            );
+                        },
+                        ease: 'expo.inOut'
+                    });
+                }
             }
         }
     };
@@ -494,11 +631,10 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
         setCurrentIndex(prevIndex => {
             let newIndex;
             if (event.deltaY > 0) {
-                newIndex = Math.min(prevIndex + 1, lerpCoordinatesRef.current.length - 1);
+                newIndex = Math.min(prevIndex + 1, lerpCoordinatesRef.current.length);
             } else {
-                newIndex = Math.max(prevIndex - 1, -1);
+                newIndex = Math.max(prevIndex - 1, -2);
             }
-
             moveCamera(prevIndex, newIndex, camera!);
             return newIndex;
         });
@@ -517,7 +653,7 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
         return () => {
             window.removeEventListener('wheel', wheelHandler);
         };
-    }, [camera, handleWheel]);
+    }, [camera]);
 
 
     useEffect(() => {
