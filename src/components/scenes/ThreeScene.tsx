@@ -11,6 +11,7 @@ import { useThree } from '@/hooks/useThree';
 import { ILabelPosition, ILerpCoordinates, IThreeScene } from '@/types';
 import './ThreeScene.css';
 import { getCarCenter, getCarHood, getCarRightSide, getCarTail, lockMouseControl } from '@/utils';
+import { Instruction } from '../Instruction/Instruction';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -92,6 +93,8 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
         cssScene.add(label);
         return label;
     };
+
+
 
     const initializeCarsLayout = (
         webglScene: Scene,
@@ -521,20 +524,22 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                                     // const cssLabels = document.querySelectorAll('.css-label');
                                     if (prevIndex === lerpCoordinates.length - 2 && nextIndex === lerpCoordinates.length - 1) {
                                         camera.lookAt(new Vector3(newTarget.x, newTarget.y, newTarget.z + 1));
-                                    } 
+                                    }
                                     else {
                                         camera.lookAt(new Vector3(newTarget.x, newTarget.y, newTarget.z)); // Keep looking at the new target
                                     }
                                 },
                                 onComplete: () => {
                                     const cssLabels = document.querySelectorAll('.css-label');
+                                    if (cssLabels.length > 0) {
+                                        gsap.to(cssLabels, {
+                                            opacity: 1,
+                                            duration: 0.2,
+                                            stagger: 0.1, // adds delay between each animation
+                                            ease: 'power2.out'
+                                        });
+                                    }
                                     // Reach the last lerp destination
-                                    gsap.to(cssLabels, {
-                                        opacity: 1,
-                                        duration: 0.2,
-                                        stagger: 0.1, // adds delay between each animation
-                                        ease: 'power2.out'
-                                    });
                                     setIsFreelyViewing(1); // Unlock the camera controls after the animation
                                     isScrolling.current = false; // Unlock scrolling after animation
                                 }
@@ -704,7 +709,10 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
     }, [isMounted]);
 
 
-    return <div ref={mountRef} className='three-scene-wrapper' />
+    return <>
+        <Instruction />
+        <div ref={mountRef} className='three-scene-wrapper' />;
+    </>
 };
 
 export default ThreeScene;

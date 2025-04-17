@@ -10,8 +10,8 @@
   font-family: 'Teko', sans-serif;
   font-optical-sizing: auto;
   background-color: rgba(0, 0, 0, 0.5);
-  padding: 0.5em 1em;
-  border-radius: 0.7em;
+  padding: 0.25em 0.5em;
+  border-radius: 0.5em;
 }
 
 .ending-content {
