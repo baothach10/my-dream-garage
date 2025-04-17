@@ -6,12 +6,14 @@ import { AnimationAction, EquirectangularReflectionMapping, Mesh, MeshStandardMa
 import { CSS2DObject, GLTF } from 'three/examples/jsm/Addons';
 import { degToRad } from 'three/src/math/MathUtils';
 
+import { EndingScene } from '../EndingScene/EndingScene';
+import { Instruction } from '../Instruction/Instruction';
+
 import { carNames, carCoordinates } from '@/constants';
 import { useThree } from '@/hooks/useThree';
 import { ILabelPosition, ILerpCoordinates, IThreeScene } from '@/types';
 import './ThreeScene.css';
 import { getCarCenter, getCarHood, getCarRightSide, getCarTail, lockMouseControl } from '@/utils';
-import { Instruction } from '../Instruction/Instruction';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -286,44 +288,8 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
         labelCoordinatesRef.current = labelCoordinates;
     }
 
-    const createEndingScreen = () => {
-        if (!cssScene) return;
-
-        const div = document.createElement('div');
-        div.className = 'ending-screen';
-        div.innerHTML = `
-            <div>
-            <h1 class="ending-content">Thank you for watching!</h1>
-            <p class="ending-content">Created by Thach Ngo</p>
-            <p class="ending-content">2023</p>
-            </div>
-        `;
-        div.style.position = 'absolute';
-        div.style.top = '100%';
-        div.style.left = '0';
-        div.style.width = '100%';
-        div.style.height = '100%';
-        div.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-        div.style.color = 'white';
-        div.style.textAlign = 'center';
-        div.style.zIndex = '1000';
-        div.style.opacity = '1';
-
-        const overlay = document.createElement('div');
-        overlay.className = 'overlay';
-        overlay.style.position = 'absolute';
-        overlay.style.top = '0';
-        overlay.style.left = '0';
-        overlay.style.width = '100%';
-        overlay.style.height = '100%';
-
-        overlay.appendChild(div);
-        const root = document.getElementById('root') as HTMLDivElement;
-        root.appendChild(overlay);
-    }
-
     const showEndingScreen = () => {
-        const endingScreen = document.querySelector('.ending-screen');
+        const endingScreen = document.querySelector('.ending-scene');
         setIsFreelyViewing(0); // Lock the camera controls during the animation
         if (endingScreen) {
             const children = document.querySelectorAll('.ending-content');
@@ -348,7 +314,7 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
     }
 
     const hideEndingScreen = () => {
-        const endingScreen = document.querySelector('.ending-screen') as HTMLDivElement;
+        const endingScreen = document.querySelector('.ending-scene') as HTMLDivElement;
         if (endingScreen) {
             const children = document.querySelectorAll('.ending-content');
             gsap.to(children, {
@@ -364,8 +330,8 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                         onComplete: () => {
                             setIsFreelyViewing(1);
                             isScrolling.current = false; // Unlock scrolling after animation
-                            const overlay = document.querySelector('.overlay') as HTMLDivElement;
-                            if (overlay) overlay.removeChild(endingScreen);
+                            // const overlay = document.querySelector('.overlay') as HTMLDivElement;
+                            // if (overlay) overlay.removeChild(endingScreen);
                         }
                     });
                 }
@@ -459,9 +425,9 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                         const oldLabels = document.querySelectorAll('.css-label');
                         setIsFreelyViewing(0); // Lock the camera controls during the animation
                         if (oldLabels.length === 0) {
-                            if (nextIndex === lerpCoordinates.length - 1) {
-                                createEndingScreen();
-                            }
+                            // if (nextIndex === lerpCoordinates.length - 1) {
+                            //     createEndingScreen();
+                            // }
                             if (!labelCoordinates[nextIndex] || nextIndex > lerpCoordinates.length - 1) return;
                             labelCoordinates[nextIndex].forEach(label => {
                                 create2DCSSElement(
@@ -480,9 +446,9 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                                 labelObjects.current.forEach(label => {
                                     cssScene!.remove(label); // Remove label after animation
                                 });
-                                if (nextIndex === lerpCoordinates.length - 1) {
-                                    createEndingScreen();
-                                }
+                                // if (nextIndex === lerpCoordinates.length - 1) {
+                                //     createEndingScreen();
+                                // }
                                 if (!labelCoordinates[nextIndex] || nextIndex > lerpCoordinates.length - 1) return;
                                 labelCoordinates[nextIndex].forEach(label => {
                                     create2DCSSElement(
@@ -553,7 +519,7 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                 if (!newTarget) return;
 
                 if (prevIndex === lerpCoordinates.length) {
-                    const endScene = document.querySelector('.ending-screen') as HTMLDivElement;
+                    const endScene = document.querySelector('.ending-scene') as HTMLDivElement;
                     if (endScene) {
                         hideEndingScreen();
                     }
@@ -711,7 +677,8 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
 
     return <>
         <Instruction />
-        <div ref={mountRef} className='three-scene-wrapper' />;
+        <div ref={mountRef} className='three-scene-wrapper' />
+        <EndingScene />
     </>
 };
 
