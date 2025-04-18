@@ -246,9 +246,9 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                     y: carRightSide.y,
                     z: carRightSide.z,
                     index,
-                    deltaX: index < 2 ? 2.25 : index < 4 ? 2.5 : 3,
-                    deltaY: 0.25,
-                    deltaZ: index < 2 ? 2.25 : index < 4 ? -2.5 : 0
+                    deltaX: index < 2 ? 2.25 : index < 4 ? 3 : 4,
+                    deltaY: 0.5,
+                    deltaZ: index < 2 ? 2.25 : index < 4 ? -3 : 0
                 },
                 {
                     x: carTail.x,
@@ -293,23 +293,29 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
         setIsFreelyViewing(0); // Lock the camera controls during the animation
         if (endingScreen) {
             const children = document.querySelectorAll('.ending-content');
+            const listItems = document.querySelectorAll('.list-item');
             gsap.to(endingScreen, {
                 top: '0',
-                duration: 1,
+                duration: 0.5,
                 ease: 'power2.out',
                 onComplete: () => {
                     gsap.to(children, {
                         opacity: 1,
-                        duration: 0.5,
                         stagger: 0.2, // adds delay between each animation
                         ease: 'power2.out',
                         onComplete: () => {
-
-                            isScrolling.current = false; // Unlock scrolling after animation
+                            gsap.to(listItems, {
+                                opacity: 1,
+                                stagger: 0.1, // adds delay between each animation
+                                ease: 'power2.out',
+                                onComplete: () => {
+                                    isScrolling.current = false; // Unlock scrolling after animation
+                                }
+                            });
                         }
                     });
                 }
-            });
+            })
         }
     }
 
@@ -317,25 +323,31 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
         const endingScreen = document.querySelector('.ending-scene') as HTMLDivElement;
         if (endingScreen) {
             const children = document.querySelectorAll('.ending-content');
-            gsap.to(children, {
+            const listItems = document.querySelectorAll('.list-item');
+            gsap.to(listItems, {
                 opacity: 0,
-                duration: 0.5,
-                stagger: 0.2, // adds delay between each animation
+                stagger: 0.1, // adds delay between each animation
                 ease: 'power2.out',
                 onComplete: () => {
-                    gsap.to(endingScreen, {
-                        top: '100%',
-                        duration: 1,
+                    gsap.to(children, {
+                        opacity: 0,
+                        stagger: 0.2, // adds delay between each animation
                         ease: 'power2.out',
                         onComplete: () => {
-                            setIsFreelyViewing(1);
-                            isScrolling.current = false; // Unlock scrolling after animation
-                            // const overlay = document.querySelector('.overlay') as HTMLDivElement;
-                            // if (overlay) overlay.removeChild(endingScreen);
+                            gsap.to(endingScreen, {
+                                top: '100%',
+                                duration: 0.5,
+                                ease: 'power2.out',
+                                onComplete: () => {
+                                    setIsFreelyViewing(1);
+                                    isScrolling.current = false; // Unlock scrolling after animation
+                                }
+                            });
                         }
                     });
                 }
             });
+
         }
     }
 

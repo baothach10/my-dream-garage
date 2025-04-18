@@ -73,6 +73,7 @@
 }
 
 .list-item {
+  opacity: 0;
   img {
     width: 5em;
     height: 5em;

@@ -42,7 +42,7 @@ export const EndingScene: React.FC = () => {
                 </div>
                 <div className="contact-container">
                     <h3 className='section-title ending-content'>Contact Me</h3>
-                    <ul className='contact-list list ending-content'>
+                    <ul className='contact-list list'>
                         <li>
                             <a className='list-item' href="mailto:baothach10@gmail.com" target="_blank" rel="noopener noreferrer">
                                 <img src="assets/images/gmail.png" alt="Gmail" />
