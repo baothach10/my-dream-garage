@@ -4,9 +4,10 @@ import * as THREE from 'three';
 import { CSS2DRenderer, PointerLockControls } from 'three/examples/jsm/Addons';
 import { degToRad } from 'three/src/math/MathUtils';
 
+import { IS_DEBUG } from '@/constants';
 import { useAssets } from '@/context/AssetLoaderContext';
 
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && IS_DEBUG) {
   const stats = new Stats();
   stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
   document.body.appendChild(stats.dom);
