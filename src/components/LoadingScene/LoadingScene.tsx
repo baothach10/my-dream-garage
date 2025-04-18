@@ -18,7 +18,7 @@ export const LoadingScene = ({ percentage }: TLoadingSceneProps) => {
                     <div className="item" style={{ "--position": 4 } as React.CSSProperties}><img src="/assets/images/bugattiLogo.png" alt="bugatti logo" /></div>
                 </div>
                 <div className="content">
-                    <h1 data-content="MY DREAM GARAGE">
+                    <h1>
                         MY DREAM GARAGE
                     </h1>
                     <div className="author">

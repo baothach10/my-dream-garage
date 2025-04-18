@@ -95,7 +95,7 @@
 }
 
 .banner .content h1::after {
-  content: attr(data-content);
+  content: 'MY DREAM GARAGE';
   position: absolute;
   inset: 0 0 0 0;
   z-index: 2;
@@ -140,7 +140,7 @@
 }
 
 .banner .content .model {
-  background: url('/assets/images/loadingCar.webp');
+  background: url('assets/images/loadingCar.webp');
   width: 100%;
   height: 80vh;
   @media screen and (max-width: 1000px) {
