@@ -33,8 +33,16 @@
 
 .banner .slider {
   position: absolute;
-  width: 30%;
-  height: 35%;
+  width: 25%;
+  height: 30%;
+  @media screen and (max-width: 1024px) {
+    width: 20%;
+    height: 23%;
+  }
+  @media screen and (min-width: 1025px) and (max-width: 1440px) {
+    width: 22%;
+    height: 25%;
+  }
   top: 15%;
   left: 50%;
   transform-style: preserve-3d;
@@ -55,16 +63,22 @@
 .banner .slider .item {
   position: absolute;
   inset: 0 0 0 0;
-  transform: rotateY(calc((var(--position) - 1) * (360 / var(--quantity)) * 1deg)) translateZ(400px);
-  @media screen and (max-width: 1000px) {
+  transform: rotateY(calc((var(--position) - 1) * (360 / var(--quantity)) * 1deg)) translateZ(700px);
+  @media screen and (max-width: 1024px) {
     transform: rotateY(calc((var(--position) - 1) * (360 / var(--quantity)) * 1deg))
-      translateZ(200px);
+      translateZ(250px);
+  }
+  @media screen and (min-width: 1025px) and (max-width: 1440px) {
+    transform: rotateY(calc((var(--position) - 1) * (360 / var(--quantity)) * 1deg))
+      translateZ(400px);
   }
 }
 
 .banner .slider .item img {
-  width: 100%;
-  height: 100%;
+  height: 95%;
+  @media screen and (max-width: 1024px) {
+    width: 85%;
+  }
   object-fit: contain;
 }
 
@@ -86,11 +100,14 @@
   font-family: 'Poetsen One', sans-serif;
   font-weight: 400;
   font-style: normal;
-  font-size: 8em;
+  font-size: 10em;
   color: white;
   position: relative;
-  @media screen and (max-width: 1000px) {
+  @media screen and (max-width: 1024px) {
     font-size: 4em;
+  }
+  @media screen and (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 6em;
   }
 }
 
@@ -110,10 +127,13 @@
   font-weight: 700;
   font-style: normal;
   color: white;
-  font-size: 1.5em;
+  font-size: 2.5em;
   z-index: 1;
   text-shadow: 2px 2px 4px black;
-  @media screen and (max-width: 1000px) {
+  @media screen and (max-width: 1024px) {
+    font-size: 1.25em;
+  }
+  @media screen and (min-width: 1025px) and (max-width: 1440px) {
     font-size: 1.5em;
   }
 }
@@ -127,15 +147,18 @@
 .banner .content p {
   white-space: nowrap;
   text-align: right;
-  font-size: 1.5em;
+  font-size: 1.75em;
   font-family: 'Teko', sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
   z-index: 1;
   text-shadow: 2px 2px 4px black;
-  @media screen and (max-width: 1000px) {
-    font-size: 1em;
+  @media screen and (max-width: 1024px) {
+    font-size: 1.25em;
+  }
+  @media screen and (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 1.5em;
   }
 }
 
@@ -143,9 +166,11 @@
   background: url('/assets/images/loadingCar.webp');
   width: 100%;
   height: 80vh;
-  @media screen and (max-width: 1000px) {
-    width: 100%;
+  @media screen and (max-width: 1024px) {
     height: 70vh;
+  }
+  @media screen and (min-width: 1025px) and (max-width: 1440px) {
+    height: 75vh;
   }
   position: absolute;
   bottom: 0;

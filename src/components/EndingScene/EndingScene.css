@@ -30,9 +30,12 @@
   font-style: normal;
   color: white;
   margin: 0.2em;
-  font-size: 3em;
-  @media screen and (max-width: 1000px) {
-    font-size: 1.5em;
+  font-size: 6em;
+  @media screen and (max-width: 1024px) {
+    font-size: 2.5em;
+  }
+  @media screen and (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 3em;
   }
 }
 
@@ -40,9 +43,12 @@
 .disclaimer,
 .section-title,
 .disclaimer {
-  margin: 0.5em;
-  @media screen and (max-width: 1000px) {
-    margin: 0.25em;
+  margin: 0.6em;
+  @media screen and (max-width: 1024px) {
+    margin: 0.3em;
+  }
+  @media screen and (min-width: 1025px) and (max-width: 1440px) {
+    margin: 0.4em;
   }
   font-family: 'Teko', sans-serif;
   font-optical-sizing: auto;
@@ -52,34 +58,48 @@
 
 .title {
   margin: 0;
-  font-size: 6em;
-  @media screen and (max-width: 1000px) {
-    font-size: 3em;
+  font-size: 10em;
+  @media screen and (max-width: 1024px) {
+    font-size: 4em;
+  }
+  @media screen and (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 6em;
   }
 }
 
 .section-title {
-  font-size: 3em;
-  @media screen and (max-width: 1000px) {
-    font-size: 1.5em;
+  font-size: 5em;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 2.25em;
+  }
+  @media screen and (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 3em;
   }
 }
 
 .disclaimer {
-  font-size: 2em;
-  @media screen and (max-width: 1000px) {
-    font-size: 1.25em;
+  font-size: 4em;
+  @media screen and (max-width: 1024px) {
+    font-size: 1.5em;
+  }
+  @media screen and (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 2em;
   }
 }
 
 .list-item {
   opacity: 0;
   img {
-    width: 5em;
-    height: 5em;
-    @media screen and (max-width: 1000px) {
-      width: 3em;
-      height: 3em;
+    width: 9em;
+    height: 9em;
+    @media screen and (max-width: 1024px) {
+      width: 4em;
+      height: 4em;
+    }
+    @media screen and (min-width: 1025px) and (max-width: 1440px) {
+      width: 5em;
+      height: 5em;
     }
     transition: all 0.2s ease;
     &:hover {
@@ -102,9 +122,13 @@
   align-items: center;
   justify-content: center;
   list-style-type: none;
-  column-gap: 5em;
-  @media screen and (max-width: 1000px) {
+  column-gap: 8em;
+
+  @media screen and (max-width: 1024px) {
     column-gap: 3em;
+  }
+  @media screen and (min-width: 1025px) and (max-width: 1440px) {
+    column-gap: 5em;
   }
 }
 
