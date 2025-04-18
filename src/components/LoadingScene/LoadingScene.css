@@ -140,7 +140,7 @@
 }
 
 .banner .content .model {
-  background: url('assets/images/loadingCar.webp');
+  background: url('/assets/images/loadingCar.webp');
   width: 100%;
   height: 80vh;
   @media screen and (max-width: 1000px) {
