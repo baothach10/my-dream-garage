@@ -42,7 +42,7 @@ const App: React.FC = () => {
         handleTransition();
     }, [isLoaded])
 
-    return isLoaded ? <ThreeScene textures={textures} models={models} specs={specs} animationMixers={animationMixers} animationActions={animationActions} /> : <LoadingScene percentage={progress} />
+    return  isLoaded ? <ThreeScene textures={textures} models={models} specs={specs} animationMixers={animationMixers} animationActions={animationActions} /> : <LoadingScene percentage={progress} />
 };
 
 export default App;
