@@ -70,7 +70,11 @@
   }
   @media screen and (min-width: 1025px) and (max-width: 1440px) {
     transform: rotateY(calc((var(--position) - 1) * (360 / var(--quantity)) * 1deg))
-      translateZ(400px);
+      translateZ(300px);
+  }
+  @media screen and (min-width: 1441px) and (max-width: 2056px) {
+    transform: rotateY(calc((var(--position) - 1) * (360 / var(--quantity)) * 1deg))
+      translateZ(500px);
   }
 }
 
@@ -109,6 +113,9 @@
   @media screen and (min-width: 1025px) and (max-width: 1440px) {
     font-size: 6em;
   }
+  @media screen and (min-width: 1441px) and (max-width: 2056px) {
+    font-size: 8em;
+  }
 }
 
 .banner .content h1::after {
@@ -136,6 +143,9 @@
   @media screen and (min-width: 1025px) and (max-width: 1440px) {
     font-size: 1.5em;
   }
+  @media screen and (min-width: 1441px) and (max-width: 2056px) {
+    font-size: 2em;
+  }
 }
 
 .banner .content h2 {
@@ -158,6 +168,9 @@
     font-size: 1.25em;
   }
   @media screen and (min-width: 1025px) and (max-width: 1440px) {
+    font-size: 1.5em;
+  }
+  @media screen and (min-width: 1441px) and (max-width: 2056px) {
     font-size: 1.5em;
   }
 }
