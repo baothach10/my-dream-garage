@@ -87,20 +87,6 @@
   }
 }
 
-.content h2 {
-  font-size: 3em;
-
-  @media screen and (max-width: 393px) {
-    font-size: 1.5em;
-  }
-  @media screen and (min-width: 394px) and (max-width: 480px) {
-    font-size: 1.5em;
-  }
-  @media screen and (min-width: 480px) {
-    font-size: 2em;
-  }
-}
-
 .content p,
 .content h3 {
   white-space: nowrap;
