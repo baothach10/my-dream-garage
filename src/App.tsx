@@ -1,17 +1,21 @@
 import React, { useEffect } from 'react';
 
 import { LoadingScene } from './components/LoadingScene/LoadingScene';
+import { MobileScene } from './components/MobileScene/MobileScene';
 import { ThreeScene } from './components/scenes/ThreeScene';
 import { useAssets } from './context/AssetLoaderContext';
+import { useIsMobile } from './hooks/useIsMobile';
 
 const App: React.FC = () => {
+    const isMobile = useIsMobile();
+    if (isMobile) return <MobileScene />;
     const { isLoaded,
         progress,
         textures,
         models,
         animationActions,
         animationMixers,
-        specs } = useAssets()
+        specs } = useAssets();
 
     const createOverlay = () => {
         const overlay = document.createElement('div');
@@ -42,7 +46,8 @@ const App: React.FC = () => {
         handleTransition();
     }, [isLoaded])
 
-    return  isLoaded ? <ThreeScene textures={textures} models={models} specs={specs} animationMixers={animationMixers} animationActions={animationActions} /> : <LoadingScene percentage={progress} />
+    return (
+        isLoaded ? <ThreeScene textures={textures} models={models} specs={specs} animationMixers={animationMixers} animationActions={animationActions} /> : <LoadingScene percentage={progress} />)
 };
 
 export default App;

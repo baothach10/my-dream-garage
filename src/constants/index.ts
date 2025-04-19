@@ -8,7 +8,7 @@ export const carCoordinates: ICarCoordinates[] = [
   { x: 0, y: 0, z: -35, rotation: 0 }
 ];
 
-export const IS_DEBUG = true;
+export const IS_DEBUG = false;
 
 export const carNames: string[] = [
   'lamborghiniRevuelto',

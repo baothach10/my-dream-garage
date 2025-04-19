@@ -106,8 +106,8 @@
 .list-item {
   opacity: 0;
   img {
-    width: 9em;
-    height: 9em;
+    width: 7em;
+    height: 7em;
     @media screen and (max-width: 1024px) {
       width: 4em;
       height: 4em;

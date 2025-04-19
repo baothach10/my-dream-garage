@@ -42,7 +42,6 @@ export function useThree() {
 
   const updateAnimationMixers = (delta: number) => {
     if (!animationMixers) return;
-    // console.log(animationMixers);
     Object.values(animationMixers).forEach(mixer => {
       mixer.update(delta);
     });

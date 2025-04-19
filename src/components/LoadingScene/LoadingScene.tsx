@@ -22,7 +22,7 @@ export const LoadingScene = ({ percentage }: TLoadingSceneProps) => {
                         MY DREAM GARAGE
                     </h1>
                     <div className="author">
-                        <h2>Thach Ngo</h2>
+                        <h2>by Thach Ngo</h2>
                         <p>{percentage < 25 && "Loading textures and models..."}
                             {percentage >= 25 && percentage < 50 && "Loading car information..."}
                             {percentage >= 50 && percentage < 75 && "Initializing 3D mechanics..."}

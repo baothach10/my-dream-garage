@@ -12,7 +12,7 @@ export const EndingScene: React.FC = () => {
                     <h3 className='section-title ending-content'>This website is made with</h3>
                     <div className="credits-track-container ending-content">
                         <ul className='credits-list list'>
-                            <li>
+                            <li >
                                 <a className='list-item' href="https://threejs.org/" target="_blank" rel="noopener noreferrer">
                                     <img src="assets/images/threejs.png" alt="Three.js" />
                                 </a>
@@ -25,6 +25,11 @@ export const EndingScene: React.FC = () => {
                             <li>
                                 <a className='list-item' href="https://www.typescriptlang.org/" target="_blank" rel="noopener noreferrer">
                                     <img src="assets/images/typescript.png" alt="TypeScript" />
+                                </a>
+                            </li>
+                            <li>
+                                <a className='list-item' href="https://gsap.com/" target="_blank" rel="noopener noreferrer">
+                                    <img src="assets/images/gsap.svg" alt="GSAP" />
                                 </a>
                             </li>
                             <li>
