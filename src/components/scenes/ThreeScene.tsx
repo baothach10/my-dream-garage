@@ -360,7 +360,6 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
 
         const newTarget = lerpCoordinates[nextIndex];
 
-        if (!newTarget && !oldTarget) return;
         if (!initialCameraPosition) return; // Prevent animation if already animating
 
         const timeline = gsap.timeline();
@@ -528,7 +527,10 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
                     ease: 'expo.inOut'
                 });
             } else {
-                if (!newTarget) return;
+                if (!newTarget) {
+                    isScrolling.current = false; // Unlock scrolling after animation
+                    return;
+                }
 
                 if (prevIndex === lerpCoordinates.length) {
                     const endScene = document.querySelector('.ending-scene') as HTMLDivElement;
@@ -616,7 +618,7 @@ export const ThreeScene: React.FC<IThreeScene> = ({ models, textures, specs, ani
             if (event.deltaY > 0) {
                 newIndex = Math.min(prevIndex + 1, lerpCoordinatesRef.current.length);
             } else {
-                newIndex = Math.max(prevIndex - 1, -2);
+                newIndex = Math.max(prevIndex - 1, -1);
             }
             moveCamera(prevIndex, newIndex, camera!);
             return newIndex;
